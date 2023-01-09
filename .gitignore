@@ -1,0 +1,26 @@
+# GoLand files
+.idea
+
+grpc/test*.pb.go
+
+# Test binary, build with `go test -c`
+*.test
+
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build artifacts
+artifacts
+
+# mongodb certificate
+mongodb-cert.crt
+mongodb-cert.key
+mongodb.pem
+
+**/vendor/
+**/bin/
+
+log/mocks
