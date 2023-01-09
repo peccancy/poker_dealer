@@ -1,0 +1,89 @@
+run:
+  modules-download-mode: readonly
+
+output:
+  print-issued-lines: false
+  sort-results: true
+
+linters:
+  enable-all: true
+  disable:
+    - tagliatelle
+    - lll
+    - forbidigo
+    - exhaustivestruct
+    - exhaustruct
+    - gochecknoglobals
+    - testpackage
+    - varnamelen
+    - paralleltest
+    - wrapcheck
+    - goerr113
+    - forcetypeassert
+    - goconst
+    - nonamedreturns
+    - ireturn
+    - gomnd
+    - thelper
+    - misspell
+    - wsl
+    - nolintlint
+    - exhaustive
+    - nestif
+    - cyclop # duplicate functionality with revive
+
+      # deprecated
+    - deadcode
+    - structcheck
+    - varcheck
+    - scopelint
+    - maligned
+    - interfacer
+    - nosnakecase
+    - golint
+    - ifshort
+
+     # disabled because of generics
+    - rowserrcheck
+    - sqlclosecheck
+    - wastedassign
+
+issues:
+  exclude-rules:
+    - path: "_test.go"
+      linters:
+        - gocyclo
+        - errcheck
+        - funlen
+        - dupl
+
+  fast: false
+
+linters-settings:
+  funlen:
+    lines: 80
+  godox:
+    keywords:
+      - HACK
+  dupl:
+    threshold: 150
+  revive:
+    enable-all-rules: true
+    rules:
+      - {name: line-length-limit, disabled: true}
+      - {name: argument-limit, disabled: true}
+      - {name: file-header, disabled: true}
+      - {name: banned-characters, disabled: true}
+      - {name: function-length, disabled: true}
+      - {name: max-public-structs, disabled: true}
+      - {name: function-result-limit, disabled: true}
+      - {name: add-constant, disabled: true}
+      - {name: flag-parameter, disabled: true}
+      - {name: confusing-results, disabled: true}
+      - {name: nested-structs, disabled: true}
+      - {name: cyclomatic, disabled: false, arguments: [10]}
+      - {name: cognitive-complexity, disabled: false, arguments: [7]}
+      - {name: unused-receiver, disabled: false}
+      - {name: import-shadowing, disabled: false}
+      - {name: unused-parameter, disabled: false}
+      - {name: confusing-naming, disabled: false}
