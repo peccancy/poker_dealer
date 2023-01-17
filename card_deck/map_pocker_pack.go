@@ -1,40 +1,34 @@
 package card_deck
 
+import "poker_dealer/model"
+
 var (
-	Club = Suit("club")
-	Diamond = Suit("diamond")
-	Heart = Suit("hearts")
-	Spade = Suit("spade")
+	Club = model.Suit("club")
+	Diamond = model.Suit("diamond")
+	Heart = model.Suit("hearts")
+	Spade = model.Suit("spade")
 
-	FV2 = FaceValue("2")
-	FV3 = FaceValue("3")
-	FV4 = FaceValue("4")
-	FV5 = FaceValue("5")
-	FV6 = FaceValue("6")
-	FV7 = FaceValue("7")
-	FV8 = FaceValue("8")
-	FV9 = FaceValue("9")
-	FV10 = FaceValue("10")
-	FVJ = FaceValue("J")
-	FVQ = FaceValue("Q")
-	FVK = FaceValue("K")
-	FVA = FaceValue("A")
+	FV2 = model.FaceValue("2")
+	FV3 = model.FaceValue("3")
+	FV4 = model.FaceValue("4")
+	FV5 = model.FaceValue("5")
+	FV6 = model.FaceValue("6")
+	FV7 = model.FaceValue("7")
+	FV8 = model.FaceValue("8")
+	FV9 = model.FaceValue("9")
+	FV10 = model.FaceValue("10")
+	FVJ = model.FaceValue("J")
+	FVQ = model.FaceValue("Q")
+	FVK = model.FaceValue("K")
+	FVA = model.FaceValue("A")
 )
 
-type (
-	Card struct {
-		suit Suit
-		faceValue FaceValue
-	}
 
-	Suit string
-	FaceValue string
-)
 
-var CardDeck []Card
+var CardDeck []model.Card
 
 func init() {
-	CardDeck = []Card{
+	CardDeck = []model.Card{
 		{Club, FV2},
 		{Club, FV3},
 		{Club, FV4},
