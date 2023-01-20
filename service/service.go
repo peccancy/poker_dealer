@@ -1,57 +1,78 @@
 package service
 
 import (
-	"github.com/pkg/errors"
 	"context"
-	"fmt"
-	"github.com/peccancy/chassi/authorisation"
+	"github.com/peccancy/chassi/grpc/auth"
 	"github.com/peccancy/chassi/health"
-	"github.com/peccancy/chassi/http/auth"
 	"github.com/peccancy/chassi/prometheus"
-	"net/http"
-	"poker_dealer/logs"
-	"poker_dealer/opts"
-	"runtime/debug"
+	"github.com/peccancy/poker_dealer/logs"
+	"github.com/peccancy/poker_dealer/opts"
+	"github.com/peccancy/poker_dealer/storage/mongo"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 	"sync"
 
-	chassishttp "github.com/peccancy/chassi/http"
+	chassisgrpc "github.com/peccancy/chassi/grpc"
 )
 
-func Start(ctx context.Context, config *opts.Config) (err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			msg := fmt.Sprintf("panic %s: %s", r, string(debug.Stack()))
-			logs.ServicePanicked().Write(msg)
-			err = errors.Errorf(msg)
-		}
-	}()
+type tocken struct{}
 
-	// Configure service
+func Start(ctx context.Context, config *opts.Config) (err error) {
 	logs.Info().Write("Starting service")
 
-	jwkProvider := authorisation.NewURLJwkProvider(config.JwksURL)
+	repo, err := mongo.New(ctx, config.MongoDB)
+	if err != nil {
+		logs.StartService().Write(err)
+		return errors.Wrap(err, "start mongo connection error")
+	}
+	defer repo.Close()
 
+	//t := tocken{}
+	//
+	//rout := router.New(repo, t)
 
 	var wg sync.WaitGroup
 
-	chassishttp.ConnectServiceWithContext(ctx, &wg, config.ServerPort, handler)
+	// run main gRPC service, default on 8080
+	_, err = chassisgrpc.ConnectServiceSimpleWithContext(
+		ctx,
+		&wg,
+		config.GrpcPort,
+		func(server *grpc.Server) {
+			//api.RegisterTicketsDomainServiceServer(server, rout)
+		},
+		config.JwksURL,
+		!config.JwtSkipVerifyToken,
+		logs.EntryFactory,
+		createRoutePermissionMap(),
+	)
+	if err != nil {
+		logs.GrpcServerInitFailure().Write(err)
+		return errors.Wrap(err, "start grpc server error")
+	}
 
+	// run healthcheck service, default on 8888
+	checks := []func() error{repo.HealthCheck}
+
+	health.ConnectHealthCheckServiceWithCtx(ctx, &wg, config.HealthcheckPort, checks, checks)
+
+	// run prometheus service, default on 9100
 	prometheus.ConnectPrometheusServiceWithContext(ctx, &wg, config.PrometheusPort)
-
-	var checks []func() error
-	go func(ctx context.Context) {
-		logs.Info().Write("Starting health check")
-		src := health.ConnectHealthCheckServiceWithCtx(ctx, &wg, config.HealthcheckPort, checks, checks)
-		<-ctx.Done()
-		err := src.Close()
-		if err != nil {
-			logs.ServicePanicked.WithCorrelationID(ctx).Write(err)
-		}
-	}(ctx)
 
 	logs.Info().Write("Service started")
 
 	wg.Wait()
 
 	return nil
+}
+
+func createRoutePermissionMap() auth.RoutePermissionMap {
+	return auth.NewRoutePermissionMap() //.
+	//WithRoutePermission(api.TicketsDomainService_GetTicketTypes, resources.Tickets, authorisation.All, authorisation.Read).
+	//WithRoutePermission(api.TicketsDomainService_GetTicketByID, resources.Tickets, authorisation.Any, authorisation.Read).
+	//WithRoutePermission(api.TicketsDomainService_GetTickets, resources.Tickets, authorisation.All, authorisation.Read).
+	//WithRoutePermission(api.TicketsDomainService_GetTicketsByLinkedEntities, resources.Tickets, authorisation.All, authorisation.Read).
+	//WithRoutePermission(api.TicketsDomainService_CreateTicket, resources.Tickets, authorisation.Any, authorisation.Create).
+	//WithRoutePermission(api.TicketsDomainService_UpdateTicketByOwner, resources.Tickets, authorisation.Any, authorisation.Update).
+	//WithRoutePermission(api.TicketsDomainService_UpdateTicketByAssignee, resources.Tickets, authorisation.Any, authorisation.Update)
 }

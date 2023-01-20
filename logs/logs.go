@@ -1,24 +1,38 @@
 package logs
 
 import (
-	"github.com/peccancy/chassi/log"
+	logging "github.com/peccancy/chassi/log"
+	"log"
+	"os"
 )
 
 var (
-	EntryFactory log.LogEntryFactory
+	EntryFactory logging.LogEntryFactory
 )
 
 func init() {
-	EntryFactory = log.NewLogEntryFactory("tickets-client-api")
-	Error = EntryFactory.MakeEntry(log.ERROR, 2000, "error")
-	ServicePanicked = EntryFactory.MakeEntry(log.ERROR, 2001, "service panicked")
-	Info = EntryFactory.MakeEntry(log.INFO, 3000, "info")
-	Debug = EntryFactory.MakeEntry(log.DEBUG, 4000, "debug")
+	StartService = EntryFactory.MakeEntry(logging.ERROR, 2001, "start service error")
+	EntryFactory = logging.NewLogEntryFactory("tickets-client-api")
+	Error = EntryFactory.MakeEntry(logging.ERROR, 2000, "error")
+	ServicePanicked = EntryFactory.MakeEntry(logging.ERROR, 2001, "service panicked")
+	Info = EntryFactory.MakeEntry(logging.INFO, 3000, "info")
+	Debug = EntryFactory.MakeEntry(logging.DEBUG, 4000, "debug")
+	GrpcServerInitFailure = EntryFactory.MakeEntry(logging.ERROR, 2003, "grpc server init failure")
+
+	MongoDB = &MongoLogger{Logger: *log.New(os.Stdout, "mongodb ", log.LstdFlags)}
 }
 
 var (
-	Error           log.EntryFunc
-	ServicePanicked log.EntryFunc
-	Info            log.EntryFunc
-	Debug           log.EntryFunc
+	Error                 logging.EntryFunc
+	ServicePanicked       logging.EntryFunc
+	Info                  logging.EntryFunc
+	Debug                 logging.EntryFunc
+	StartService          logging.EntryFunc
+	GrpcServerInitFailure logging.EntryFunc
+
+	MongoDB *MongoLogger
 )
+
+type MongoLogger struct {
+	log.Logger
+}

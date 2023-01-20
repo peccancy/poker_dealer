@@ -2,23 +2,22 @@ package poker_dealer
 
 import (
 	"context"
+	logging "github.com/peccancy/chassi/log"
 	"github.com/peccancy/poker_dealer/logs"
 	"github.com/peccancy/poker_dealer/opts"
-	logging "github.com/peccancy/chassi/log"
+	"github.com/peccancy/poker_dealer/service"
 	"log"
 	"os"
 	"os/signal"
-	"github.com/peccancy/poker_dealer/service"
 	"runtime/debug"
 	"syscall"
-	"time"
 )
 
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			if logs.ServicePanickedError != nil {
-				logs.ServicePanickedError().Write("%s: %s", r, string(debug.Stack()))
+			if logs.ServicePanicked != nil {
+				logs.ServicePanicked().Write("%s: %s", r, string(debug.Stack()))
 			}
 			log.Fatalf("panic: %s: %s", r, string(debug.Stack()))
 		}

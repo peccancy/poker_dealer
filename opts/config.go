@@ -1,6 +1,7 @@
 package opts
 
 import (
+	"github.com/peccancy/poker_dealer/storage/mongo"
 	"time"
 
 	"github.com/peccancy/chassi/log"
@@ -9,15 +10,17 @@ import (
 type Config struct {
 	AppName            string
 	PrettyLogOutput    bool
+	GrpcPort           int
 	LogLevel           log.Level
 	ServerPort         int
 	HealthcheckPort    int
 	PrometheusPort     int
 	JwtVerifyToken     bool
 	JwksURL            string
-	TicketConnConf     *ClientConnConfig //TODO it's a NP for integrate some local service
 	SentryURL          string
 	SentryENV          string
+	JwtSkipVerifyToken bool
+	MongoDB            *mongo.Config
 }
 
 type ClientConnConfig struct {

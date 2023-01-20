@@ -1,0 +1,9 @@
+version: '3.2'
+services:
+  tickets-domain-service:
+    environment:
+      APP_JWT_SKIP_VERIFY_TOKEN: "true"
+    image: nexus.tools.devopenocean.studio/poker_dealer-service:${IMAGE_TAG}
+    depends_on:
+      - mongo
+    build: ../

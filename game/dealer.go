@@ -1,22 +1,16 @@
 package game
 
 import (
-	"math/rand"
-	deck "github.com/peccancy/poker_dealer/data_card"
+	"github.com/google/uuid"
+	"github.com/peccancy/poker_dealer/model"
 )
 
-type Table struct {
-	Deck []deck.Card
+func New(p model.Player, lock bool, pass string, bet int) uuid.UUID {
+	table := model.New(p, lock, pass, bet)
+
+	return table.ID
 }
 
-func Shuffle(a []deck.Card, source rand.Source) {
-	random := rand.New(source)
-	for i := len(a) - 1; i > 0; i-- {
-		j := random.Intn(i + 1)
-		a[i], a[j] = a[j], a[i]
-	}
-}
-
-func Start()  {
+func Start() {
 
 }

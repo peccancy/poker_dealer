@@ -1,0 +1,28 @@
+syntax = "proto3";
+package poker_dealer;
+option go_package = "api";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message CreateTableRequest {
+	Player player = 1;
+	Locked
+	Pass
+	string parent_ticket = 2;
+	TicketType type = 3;
+	TicketPrivacy privacy = 4;
+	TicketPriority priority = 5;
+	string description = 6;
+	google.protobuf.Timestamp date_occured = 7;
+	google.protobuf.Timestamp date_resolved = 8;
+	google.protobuf.Timestamp deadline = 9;
+	repeated string assignees = 10;
+	repeated LinkedEntity linked_entities = 11;
+	repeated string linked_chats = 12;
+	repeated string attachments = 13;
+}
+
+service PokerDealerService {
+	rpc CreateTable (CreateTableRequest) returns (TableResponse);
+}
