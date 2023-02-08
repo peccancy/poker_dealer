@@ -1,0 +1,31 @@
+version: '3.2'
+services:
+  poker_dealer-service:
+    image: nexus.tools.devopenocean.studio/poker_dealer:latest
+    environment:
+      APP_MONGO_HOST: "mongo"
+      APP_MONGO_PORT: "27017"
+      APP_MONGO_DATABASE: "db"
+      APP_MONGO_USER: "mongoUser"
+      APP_MONGO_PASSWORD: "mongoPassword"
+      APP_MONGO_SSL_ENABLED: "true"
+      APP_CONFIG_VERBOSE: "true"
+      GODEBUG: "http2debug=2"
+    ports:
+      - 8130:8080
+      - 8131:8888
+      - 8132:9100
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:3.6
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "mongoUser"
+      MONGO_INITDB_ROOT_PASSWORD: "mongoPassword"
+      MONGO_INITDB_DATABASE: "poker"
+    command: mongod --sslMode requireSSL --sslPEMKeyFile /etc/ssl/mongodb.pem
+    volumes:
+      - ../mongodb.pem:/etc/ssl/mongodb.pem
+    ports:
+      - 27017:27017

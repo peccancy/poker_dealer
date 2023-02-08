@@ -1,0 +1,24 @@
+{
+  "name": "@peccancy/poker_dealer-docker-composition",
+  "version": "1.0.0",
+  "description": "The poker_dealer default docker composition",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peccancy/poker_dealer.git"
+  },
+  "keywords": [
+    "reference",
+    "docker",
+    "platform"
+  ],
+  "author": "peccancy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peccancy/poker_dealer/issues"
+  },
+  "homepage": "https://github.com/peccancy/poker_dealer#readme"
+}
