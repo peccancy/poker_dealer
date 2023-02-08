@@ -1,0 +1,23 @@
+schema {
+    query: Query
+}
+
+type Query {
+    serviceToken(idToken: String!): ServiceToken!
+}
+
+type ServiceToken {
+    token: String!
+    error: Error
+}
+
+type Error {
+    code: Code!
+    message: String!
+}
+
+enum Code {
+    INTERNAL
+    INVALID_ID_TOKEN
+    USER_DENIED
+}
