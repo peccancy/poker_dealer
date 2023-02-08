@@ -3,6 +3,7 @@ package poker_dealer
 import (
 	"context"
 	logging "github.com/peccancy/chassi/log"
+	_ "github.com/peccancy/chassi/resource"
 	"github.com/peccancy/poker_dealer/logs"
 	"github.com/peccancy/poker_dealer/opts"
 	"github.com/peccancy/poker_dealer/service"

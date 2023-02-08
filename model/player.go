@@ -8,6 +8,7 @@ type Player struct {
 	ID    uuid.UUID
 	hold  bool
 	money int
+	name  string
 }
 
 func (p Player) On() {

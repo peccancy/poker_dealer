@@ -7,20 +7,21 @@ import "google/protobuf/empty.proto";
 
 message CreateTableRequest {
 	Player player = 1;
-	Locked
-	Pass
-	string parent_ticket = 2;
-	TicketType type = 3;
-	TicketPrivacy privacy = 4;
-	TicketPriority priority = 5;
-	string description = 6;
-	google.protobuf.Timestamp date_occured = 7;
-	google.protobuf.Timestamp date_resolved = 8;
-	google.protobuf.Timestamp deadline = 9;
-	repeated string assignees = 10;
-	repeated LinkedEntity linked_entities = 11;
-	repeated string linked_chats = 12;
-	repeated string attachments = 13;
+	bool privacy = 2;
+	string pass = 3;
+	int32 bet = 4;
+}
+
+message TableResponse {
+	string id = 1;
+	int32 bet = 2;
+	repeated Player players = 3;
+}
+
+message	Player {
+	string id = 1;
+	string name = 2;
+	int32 money = 3;
 }
 
 service PokerDealerService {

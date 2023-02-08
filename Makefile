@@ -3,10 +3,38 @@ export GOPROXY=direct
 export GOSUMDB=off
 export COMPOSE_PROJECT_NAME=poker_dealer
 
-SHELL=/bin/bash
+GO ?= go
 IMAGE_TAG := $(shell git rev-parse HEAD)
 DOCKER_COMPOSE = IMAGE_TAG=$(IMAGE_TAG) docker-compose -f docker-composition/default.yml -f docker-composition/system-test-mask.yml
 DOCKER_REPO = nexus.tools.devopenocean.studio
+
+ifneq "$(GOFLAGS)" ""
+  $(info GOFLAGS: ${GOFLAGS})
+endif
+
+ifneq "$(wildcard ./vendor )" ""
+  $(info Using vendor)
+  modVendor =  -mod=vendor
+  ifeq (,$(findstring -mod,$(GOFLAGS)))
+      export GOFLAGS := ${GOFLAGS} ${modVendor}
+  endif
+
+  ifeq "$(wildcard ./vendor/github.com/peccancy/chassi/resources)" ""
+  	GOCHASSI_PATH := ./vendor/github.com/peccancy/chassi/resources
+  endif
+endif
+
+ifeq ($(GOCHASSI_PATH),)
+	GOCHASSI_PATH := $(shell GO111MODULE=on $(GO) list ${modVendor} -f '{{.Dir}}' -m github.com/peccancy/chassi)/resources
+	ifeq ($(GOCHASSI_PATH),/resources)
+    	$(info Module github.com/peccancy/chassi not found, downloading.)
+    	GOCHASSI_PATH := $(shell export GO111MODULE=on && $(GO) mod tidy && $(GO) list -f '{{.Dir}}' -m github.com/peccancy/chassi)/resources
+	endif
+endif
+
+-include $(GOCHASSI_PATH)/makefiles/main.mk
+-include $(GOCHASSI_PATH)/makefiles/std.mk
+-include $(GOCHASSI_PATH)/makefiles/os-arch-type.mk
 
 .PHONY: all
 all: gen deps deps_check lint unit_test build system_test

@@ -1,12 +1,7 @@
 package opts
 
 import (
-	"time"
-
-	"github.com/peccancy/chassi/grpc"
-	"github.com/peccancy/chassi/health"
 	"github.com/peccancy/chassi/log"
-	"github.com/peccancy/chassi/prometheus"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
@@ -21,7 +16,7 @@ func ReadOS() (*Config, error) {
 	viper.SetDefault("PRETTY_LOG_OUTPUT", false)
 	viper.SetDefault("LOG_LEVEL", "ERROR")
 	viper.SetDefault("SERVER_PORT", "8080")
-	viper.SetDefault("JWKS_URL", "http://platform-authorisation-service/.well-known/jwks.json")
+	viper.SetDefault("JWKS_URL", "http://authorisation-service/.well-known/jwks.json")
 	viper.SetDefault("JWKS_EXPIRATION", "1m")
 	viper.SetDefault("JWT_VERIFY_TOKEN", false)
 
